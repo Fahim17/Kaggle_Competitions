@@ -3,12 +3,12 @@ import numpy as np
 #from sklearn import preprocessing
 #import matplotlib.pyplot as plt
 
-data = pd.read_csv('data/train.csv')
+data = pd.read_csv('data/test.csv')
 
 #print(data.columns)
 ############################## data modeling and scaling##############################
-y = data[['Survived']]
-X = data[['Pclass','Sex','Age','SibSp','Parch', 'Fare', 'Embarked']]
+# y = data[['Survived']]
+X = data[['PassengerId','Pclass','Sex','Age','SibSp','Parch', 'Fare', 'Embarked']]
 
 X = X.replace(['male','female'], [0,1]) # male == 0 and female == 1
 X = X.replace(['C','S','Q'], [1,2,3])
@@ -32,11 +32,13 @@ for index, row in X.iterrows():
 
 X['FareBin'] = pd.qcut(X['Fare'], 4)
 X['AgeBin'] = pd.cut(X['Age'].astype(int), 5)
+# print(X['FareBin'].value_counts())
+# print(X['AgeBin'].value_counts())
 
 X['FareBin'] = X.FareBin.astype(str)
 X['AgeBin'] = X.AgeBin.astype(str)
-agebin_cat = {'(-0.08, 16.0]':1,'(16.0, 32.0]':2,'(32.0, 48.0]':3,'(48.0, 64.0]':4,'(64.0, 80.0]':5}
-farebin_cat = {'(-0.001, 7.91]':1,'(7.91, 14.454]':2,'(14.454, 31.0]':3,'(31.0, 512.329]':4}
+agebin_cat = {'(-0.076, 15.2]':1,'(15.2, 30.4]':2,'(30.4, 45.6]':3,'(45.6, 60.8]':4,'(60.8, 76.0]':5}
+farebin_cat = {'(-0.001, 7.896]':1,'(7.896, 14.454]':2,'(14.454, 31.472]':3,'(31.472, 512.329]':4}
 for index, row in X.iterrows():
     X.set_value(index, 'AgeBin_catg',agebin_cat[row['AgeBin']])
     X.set_value(index, 'FareBin_catg',farebin_cat[row['FareBin']])
@@ -44,10 +46,12 @@ for index, row in X.iterrows():
 
 #X.drop('SibSp',axis=1,inplace=True)
 #X.drop('Parch',axis=1,inplace=True)
-X['Survived'] = y
+# X['Survived'] = y
 
-total = pd.DataFrame([X,y])
-X.to_csv("main_X.csv",header = True)
+total = pd.DataFrame([X])
+X.to_csv("test_X.csv",header = True)
+
+print("Preprocessing Done!!!!!")
 # y.to_csv("main_y.csv",header = True)
 
 ##making numpy array
